@@ -1,7 +1,5 @@
 package calc;
 
-import javax.management.RuntimeErrorException;
-
 public class Operator implements Term{
 	private char operator;
 
