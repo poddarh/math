@@ -1,43 +1,93 @@
 package calc;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Scanner;
 
 public class Basic {
 
 	public static void main(String[] args){
 
-		Scanner in = new Scanner(System.in);
-		String input = in.nextLine();
-		input = Operand.getValuesOfConstants(input);
-		input = Function.convertToIdentifiers(input);
-		input = input.replaceAll("\\s", "");
+		HashMap<String, Double> variables = new HashMap<>();
+		variables.put("ans", 0d);
 		
-		List<Object> list = null;
-		try {
-			list = morph(input);
-		} catch (Exception e) {
-			System.out.println("Syntax Error");
-			in.close();
-			return;
-		}
-		System.out.println(list);
-		if(Validator.validateSyntax(list)){
-			try {
-				solve(list);
-			} catch (Exception e) {
-				System.out.println("Math Error");
-				in.close();
-				return;
+		Scanner in = new Scanner(System.in);
+		
+		while(true){
+			
+			System.out.println();
+			String input = in.nextLine();
+			if(input.equals("exit"))
+				break;
+			
+			input = input.replaceAll("\\s", "");
+			
+			String currentVariable = null;
+			String expression = null;
+			
+			if(input.contains("=")){
+				
+				currentVariable = input.substring(0, input.indexOf('='));
+				if(!currentVariable.matches("^[^0-9\\W][\\w$]*$")){
+					System.out.println("Invalid variable name!");
+					continue;
+				}
+				expression = input.substring(input.indexOf('=')+1);
+				
 			}
-			System.out.println(Float.valueOf(list.get(0).toString()));
-		}else
-			System.out.println("Syntax Error");
-
+			else{
+				expression = input;
+			}
+			
+			expression = replaceVariableWithValues(variables, expression);
+			expression = Operand.getValuesOfConstants(expression);
+			expression = Function.convertToIdentifiers(expression);
+			
+			List<Object> list = null;
+			try {
+				list = morph(expression);
+			} catch (Exception e) {
+				System.out.println("Syntax Exception");
+				continue;
+			}
+	//		System.out.println(list);
+			if(Validator.validateSyntax(list)){
+				try {
+					solve(list);
+				} catch (Exception e) {
+					System.out.println("Math Error");
+					continue;
+				}
+				
+				Double value = Double.valueOf(list.get(0).toString());
+				if(currentVariable != null){
+					variables.put(currentVariable, value);
+					System.out.print(currentVariable + " -> ");
+				}
+				else{
+					variables.put("ans", value);
+				}
+				System.out.println(value.floatValue());
+				
+			}
+			else{
+				System.out.println("Syntax Error");
+			}
+			
+		}
 		
 		in.close();
 
+	}
+
+	private static String replaceVariableWithValues(HashMap<String, Double> variables, String input) {
+		for(Entry<String, Double> entry : variables.entrySet()){
+			input = input.replaceAll("(?<![a-zA-Z_$])"+ entry.getKey() +"(?![\\w$])", "(" + entry.getValue() + ")");
+		}
+		return input;
 	}
 	
 	private static List<Object> solve(List<Object> list) throws Exception {
@@ -107,7 +157,7 @@ public class Basic {
 			}
 			
 			if(bracStart==-1){
-				if(ch >= 'a' && ch<= 'h'){
+				if(ch >= 'a' && ch<= 'i'){
 					if(!str.equals("")){
 						list.add(new Operand(str));
 						list.add(new Operator('*'));

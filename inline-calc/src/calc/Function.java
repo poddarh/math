@@ -1,14 +1,15 @@
 package calc;
 
 public class Function implements Term {
-	public static final char   SIN = 'a';
-	public static final char   COS = 'b';
-	public static final char COSEC = 'c';
-	public static final char   SEC = 'd';
-	public static final char   TAN = 'e';
-	public static final char   COT = 'f';
-	public static final char   LOG = 'g';
-	public static final char    LN = 'h';
+	public static final char    SIN = 'a';
+	public static final char    COS = 'b';
+	public static final char  COSEC = 'c';
+	public static final char    SEC = 'd';
+	public static final char    TAN = 'e';
+	public static final char    COT = 'f';
+	public static final char    LOG = 'g';
+	public static final char     LN = 'h';
+	public static final char RANDOM = 'i';
 	
 	private char function;
 	public char getFunction() {
@@ -27,6 +28,7 @@ public class Function implements Term {
 		input=input.replaceAll("cot", String.valueOf(COT));
 		input=input.replaceAll("log", String.valueOf(LOG));
 		input=input.replaceAll("ln", String.valueOf(LN));
+		input=input.replaceAll("ran", String.valueOf(RANDOM));
 		return input;
 	}
 	
@@ -53,6 +55,8 @@ public class Function implements Term {
 			return Math.log10(a);
 		case LN:
 			return Math.log(a);
+		case RANDOM:
+			return Math.random()*a;
 		}
 		return 0.0;
 	}
