@@ -69,7 +69,7 @@ public class Basic {
 				else{
 					variables.put("ans", value);
 				}
-				System.out.println(value.floatValue());
+				System.out.println(value.floatValue() + " ("+float2rat(value)+")");
 				
 			}
 			else{
@@ -168,7 +168,7 @@ public class Basic {
 						throw new Exception("Syntax Error");
 					}
 					str += ch;
-				} else if (ch == '+' || ch == '-' || ch == '*' || ch == '/' || ch == '^') {
+				} else if (ch == '+' || ch == '-' || ch == '*' || ch == '/' || ch == '^' || ch == '%') {
 					if((ch=='+' || ch=='-') && str.length()==0 && (list.size()==0 || Operator.class.isInstance(list.get(list.size()-1)))){
 						str+=ch;
 					}else{
@@ -191,5 +191,48 @@ public class Basic {
 		}
 		return list;
 	}
-
+	
+	private static String float2rat(double x) {
+		boolean isNegative = x < 0;
+		if(isNegative)
+			x = -x;
+		
+		double tolerance = 1.0E-6;
+	    double h1=1; double h2=0;
+	    double k1=0; double k2=1;
+	    double b = x;
+	    do {
+	    	double a = Math.floor(b);
+	    	
+	    	double aux = h1;
+	    	h1 = a*h1+h2;
+	    	h2 = aux;
+	    	
+	        aux = k1;
+	        k1 = a*k1+k2;
+	        k2 = aux;
+	        
+	        b = 1/(b-a);
+	        
+	    } while (Math.abs(x-h1/k1) > x*tolerance);
+	    
+	    String h1String;
+	    String k1String;
+	    
+	    if(h1%1==0)
+	    	h1String = (int) h1+"";
+	    else
+	    	h1String = h1+"";
+	    
+	    if(k1%1==0)
+	    	k1String = (int) k1+"";
+	    else
+	    	k1String = k1+"";
+	    
+	    if(isNegative)
+	    	h1String = "-"+h1String;
+	    	
+	    return h1String+"/"+k1String;
+	}
+	
 }

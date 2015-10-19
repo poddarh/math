@@ -13,6 +13,7 @@ public class Operator implements Term{
 			return 3;
 		case '*':
 		case '/':
+		case '%':
 			return 2;
 		case '+':
 		case '-':
@@ -43,6 +44,8 @@ public class Operator implements Term{
 			if(b==0)
 				throw new Exception("Math Error");
 			return a / b;
+		case '%':
+			return a % b;
 		case '+':
 			return a + b;
 		case '-':
