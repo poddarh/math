@@ -17,6 +17,9 @@ public class Basic {
 		
 		while(true){
 			
+			if(!in.hasNext())
+				break;
+			
 			System.out.println();
 			String input = in.nextLine();
 			if(input.equals("exit"))
